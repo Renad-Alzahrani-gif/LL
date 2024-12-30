@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Communication</title>
+    <script src="https://cdn.jsdelivr.net/npm/node-rsa/browser/NodeRSA.min.js"></script>
+</head>
+<body>
+    <h1>Secure Communication Demo</h1>
+    <form id="secureForm">
+        <label for="message">Enter your message:</label><br>
+        <input type="text" id="message" placeholder="Enter your message"><br><br>
+        <button type="submit">Encrypt & Send</button>
+    </form>
+    <p><strong>Encrypted Message:</strong></p>
+    <p id="encryptedMessage"></p>
+
+    <script>
+        // المفتاح العام (يتم استخدامه لتشفير الرسائل)
+        const publicKey = `-----BEGIN PUBLIC KEY-----
+        MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALGVcZnWaFF8UC+9UiyLxyMeRFc9DtRj
+        nOv3Z5YrXqGJ6G7bFz4nzhtwIJHnRjbQ9V/69Ol9iV0p9CtBFoj0CAwEAAQ==
+        -----END PUBLIC KEY-----`;
+
+        // استخدام مكتبة NodeRSA لتشفير الرسائل
+        function encryptMessage(message, publicKey) {
+            const key = new NodeRSA();
+            key.importKey(publicKey, 'pkcs8-public');
+            return key.encrypt(message, 'base64');
+        }
+
+        // التعامل مع النموذج عند الإرسال
+        document.getElementById('secureForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = document.getElementById('message').value; // الرسالة المدخلة
+            const encryptedMessage = encryptMessage(message, publicKey); // تشفير الرسالة
+            document.getElementById('encryptedMessage').textContent = encryptedMessage; // عرض الرسالة المشفرة
+            console.log("Encrypted Message Sent to Server:", encryptedMessage);
+        });
+    </script>
+</body>
+</html>
